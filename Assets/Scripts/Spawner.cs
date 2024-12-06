@@ -16,6 +16,7 @@ public class Spawner : MonoBehaviour
 
     private void OnEnable()
     {
+        Debug.Log("Spawner Enabled");
         Invoke(nameof(Spawn), Random.Range(minSpawnRate, maxSpawnRate));
     }
 
@@ -26,20 +27,23 @@ public class Spawner : MonoBehaviour
 
     private void Spawn()
     {
-        float spawnValue = Random.value;
-        float cumulativeChance = 0f;
+        float spawnChance = Random.value;
+        Debug.Log("Spawn Chance: " + spawnChance);  // Thêm dòng này để kiểm tra giá trị spawnChance
 
         foreach (SpawnableObject obj in objects)
         {
-            cumulativeChance += obj.spawnChance;
-            if (spawnValue <= cumulativeChance)
+            if (spawnChance < obj.spawnChance)
             {
-                GameObject spawnedObject = Instantiate(obj.prefab);
-                spawnedObject.transform.position = transform.position;
+                Debug.Log("Spawning: " + obj.prefab.name);  // Thêm dòng này để kiểm tra xem đối tượng có được sinh ra không
+                GameObject obstacle = Instantiate(obj.prefab);
+                obstacle.transform.position += transform.position;
                 break;
             }
+            spawnChance -= obj.spawnChance;
         }
 
         Invoke(nameof(Spawn), Random.Range(minSpawnRate, maxSpawnRate));
     }
+
+
 }
